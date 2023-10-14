@@ -2,31 +2,26 @@ package org.example;
 
 public class Solution {
 
-    public int isSameTree(TreeNode A, TreeNode B) {
-        checkSameTree(A, B);
-        return isSameTree ? 1 : 0;
-    }
-
-
-    boolean isSameTree = true;
-
-    public void checkSameTree(TreeNode root1, TreeNode root2) {
-        if (root1 == null && root2 == null)
-            return;
-        else if (root1 == null || root2 == null) {
-            isSameTree = false;
-            return;
-        } else if (root1.val != root2.val) {
-            isSameTree = false;
-            return;
+    public int solve(TreeNode A, int B, int C) {
+        if (B < A.val && C < A.val) {
+            return solve(A.left, B, C);
+        } else if (B > A.val && C > A.val) {
+            return solve(A.right, B, C);
         }
-        checkSameTree(root1.left, root2.left);
-        checkSameTree(root1.right, root2.right);
+        return findDistanceFromRoot(A, B) + findDistanceFromRoot(A, C);
     }
 
-
-
-
+    public int findDistanceFromRoot(TreeNode root, int target) {
+        if (root == null)
+            return 0;
+        if (root.val == target)
+            return 0;
+        else if (target < root.val) {
+            return 1 + findDistanceFromRoot(root.left, target);
+        } else {
+            return 1 + findDistanceFromRoot(root.right, target);
+        }
+    }
 
 
 /*    public int solve(TreeNode A) {
