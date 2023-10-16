@@ -1,63 +1,58 @@
 package org.example;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
+
 public class Solution {
 
-    public int solve(TreeNode A, int B, int C) {
-        if (B < A.val && C < A.val) {
-            return solve(A.left, B, C);
-        } else if (B > A.val && C > A.val) {
-            return solve(A.right, B, C);
+
+    public ArrayList<Integer> solve(ArrayList<String> A, ArrayList<String> B) {
+        ArrayList<Integer> ans = new ArrayList<>();
+        createTries(A);
+        for (String word : B) {
+            ans.add(searchInTries(word) ? 1 : 0);
         }
-        return findDistanceFromRoot(A, B) + findDistanceFromRoot(A, C);
+        return ans;
     }
 
-    public int findDistanceFromRoot(TreeNode root, int target) {
-        if (root == null)
-            return 0;
-        if (root.val == target)
-            return 0;
-        else if (target < root.val) {
-            return 1 + findDistanceFromRoot(root.left, target);
-        } else {
-            return 1 + findDistanceFromRoot(root.right, target);
+    Tries root = new Tries(' ');
+
+    public void createTries(ArrayList<String> list) {
+        for (String word : list) {
+            Tries curr = root;
+            for (int i = 0; i < word.length(); i++) {
+                if (curr.childer[word.charAt(i) - 'a'] == null) {
+                    curr.childer[word.charAt(i) - 'a'] = new Tries(word.charAt(i));
+                }
+                curr = curr.childer[word.charAt(i) - 'a'];
+            }
+            curr.eof = true;
         }
     }
 
-
-/*    public int solve(TreeNode A) {
-        inorder(A);
-        return largestSubtre;
+    public boolean searchInTries(String word) {
+        Tries curr = root;
+        for (int i = 0; i < word.length(); i++) {
+            if (curr.childer[word.charAt(i) - 'a'] == null) {
+                return false;
+            }
+            curr = curr.childer[word.charAt(i) - 'a'];
+        }
+        return curr.eof;
     }
 
+    public static class Tries {
+        char val;
+        boolean eof;
+        Tries[] childer;
 
-    TreeNode prev = null;
-    int largestSubtre = 0;
-    int currentSubtre = 0;
-
-    void inorder(TreeNode A) {
-        if (A == null)
-            return;
-        inorder(A.left);
-        if (prev != null && prev.val > A.val) {
-            currentSubtre = 0;
+        public Tries(char val) {
+            this.val = val;
+            this.eof = false;
+            this.childer = new Tries[26];
         }
-        currentSubtre++;
-        if (A.left == null || A.right == null) {
-            largestSubtre = Math.max(largestSubtre, currentSubtre);
-        }
-        prev = A;
-        inorder(A.right);
-    }*/
+    }
 
-/*    Queue<Integer> queue = new LinkedList<>();
-    int idx = 0;
-
-    public TreeNode deserialize(ArrayList<Integer> A, int index) {
-        if (A == null || A.get(index).equals(-1))
-            return null;
-        TreeNode node = new TreeNode(A.get(index));
-        node.left = deserialize(A, index * 2 + 1);
-        node.right = deserialize(A, index * 2 + 2);
-        return node;
-    }*/
 }
